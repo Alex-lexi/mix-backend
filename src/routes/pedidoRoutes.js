@@ -11,15 +11,16 @@ import {
 import {
   verificarToken,
   verificarVendedor,
+  verificarVendedorOuAdmin,
 } from '../middlewares/authMiddleware.js';
 
 const router = Router();
 
-// GET - Listar todos os pedidos (apenas vendedor)
-router.get('/', verificarToken, verificarVendedor, getAllPedidos);
+// GET - Listar todos os pedidos (vendedor ou admin)
+router.get('/', verificarToken, verificarVendedorOuAdmin, getAllPedidos);
 
-// GET - Listar pedidos por status (apenas vendedor)
-router.get('/status/:status', verificarToken, verificarVendedor, getPedidosPorStatus);
+// GET - Listar pedidos por status (vendedor ou admin)
+router.get('/status/:status', verificarToken, verificarVendedorOuAdmin, getPedidosPorStatus);
 
 // GET - Obter pedido por número
 router.get('/numero/:numeroPedido', getPedidoByNumero);
@@ -30,10 +31,10 @@ router.get('/:id', getPedidoById);
 // POST - Criar pedido a partir do carrinho
 router.post('/', criarPedidoDoCarrinho);
 
-// PUT - Atualizar status do pedido (apenas vendedor)
-router.put('/:id/status', verificarToken, verificarVendedor, atualizarStatusPedido);
+// PUT - Atualizar status do pedido (vendedor ou admin)
+router.put('/:id/status', verificarToken, verificarVendedorOuAdmin, atualizarStatusPedido);
 
-// DELETE - Cancelar pedido (apenas vendedor)
-router.delete('/:id', verificarToken, verificarVendedor, cancelarPedido);
+// DELETE - Cancelar pedido (vendedor ou admin)
+router.delete('/:id', verificarToken, verificarVendedorOuAdmin, cancelarPedido);
 
 export default router;

@@ -9,6 +9,7 @@ import {
 import {
   verificarToken,
   verificarVendedor,
+  verificarVendedorOuAdmin,
 } from '../middlewares/authMiddleware.js';
 
 const router = Router();
@@ -162,7 +163,7 @@ router.get('/:id', getCategoriaById);
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.post('/', verificarToken, verificarVendedor, createCategoria);
+router.post('/', verificarToken, verificarVendedorOuAdmin, createCategoria);
 
 /**
  * @swagger
@@ -232,7 +233,7 @@ router.post('/', verificarToken, verificarVendedor, createCategoria);
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.put('/:id', verificarToken, verificarVendedor, updateCategoria);
+router.put('/:id', verificarToken, verificarVendedorOuAdmin, updateCategoria);
 
 /**
  * @swagger
@@ -281,6 +282,6 @@ router.put('/:id', verificarToken, verificarVendedor, updateCategoria);
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.delete('/:id', verificarToken, verificarVendedor, deleteCategoria);
+router.delete('/:id', verificarToken, verificarVendedorOuAdmin, deleteCategoria);
 
 export default router;

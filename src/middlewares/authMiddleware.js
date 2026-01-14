@@ -106,3 +106,22 @@ export const verificarAdmin = (req, res, next) => {
     });
   }
 };
+
+// Middleware para verificar se é vendedor ou administrador
+export const verificarVendedorOuAdmin = (req, res, next) => {
+  try {
+    if (req.usuario.tipo !== 'vendedor' && req.usuario.tipo !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Acesso negado. Apenas vendedores e administradores podem executar esta ação',
+      });
+    }
+    next();
+  } catch (error) {
+    return res.status(401).json({
+      success: false,
+      message: 'Erro ao verificar tipo de usuário',
+      error: error.message,
+    });
+  }
+};

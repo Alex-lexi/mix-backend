@@ -19,6 +19,7 @@ import {
 import {
   verificarToken,
   verificarVendedor,
+  verificarVendedorOuAdmin,
 } from '../middlewares/authMiddleware.js';
 
 const router = Router();
@@ -304,7 +305,7 @@ router.get('/:id', getProdutoById);
  *       403:
  *         description: Apenas vendedores podem criar produtos
  */
-router.post('/', verificarToken, verificarVendedor, createProduto);
+router.post('/', verificarToken, verificarVendedorOuAdmin, createProduto);
 
 /**
  * @swagger
@@ -350,7 +351,7 @@ router.post('/', verificarToken, verificarVendedor, createProduto);
  *       403:
  *         description: Apenas vendedores podem atualizar produtos
  */
-router.put('/:id', verificarToken, verificarVendedor, updateProduto);
+router.put('/:id', verificarToken, verificarVendedorOuAdmin, updateProduto);
 
 /**
  * @swagger
@@ -395,7 +396,7 @@ router.put('/:id', verificarToken, verificarVendedor, updateProduto);
  *       404:
  *         description: Produto não encontrado
  */
-router.put('/:id/promocao', verificarToken, verificarVendedor, definirPromocao);
+router.put('/:id/promocao', verificarToken, verificarVendedorOuAdmin, definirPromocao);
 
 /**
  * @swagger
@@ -418,6 +419,6 @@ router.put('/:id/promocao', verificarToken, verificarVendedor, definirPromocao);
  *       403:
  *         description: Apenas vendedores podem deletar produtos
  */
-router.delete('/:id', verificarToken, verificarVendedor, deleteProduto);
+router.delete('/:id', verificarToken, verificarVendedorOuAdmin, deleteProduto);
 
 export default router;
