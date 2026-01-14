@@ -1,0 +1,103 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id          Int      @id @default(autoincrement())
+  email       String   @unique
+  senha       String
+  nome        String
+  tipo        String   @default("cliente") // "vendedor" ou "cliente"
+  telefone    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  pedidos     Pedido[]
+  carrinho    Carrinho?
+}
+
+model Categoria {
+  id       Int      @id @default(autoincrement())
+  nome     String
+  produtos Produto[]
+}
+
+model Produto {
+  id                Int     @id @default(autoincrement())
+  nome              String
+  preco             Float
+  descricao         String
+  imagem            String
+  quantidade        Int     @default(0)
+  isBestseller      Boolean @default(false)
+  quantidadeVendida Int     @default(0)
+  emPromocao        Boolean @default(false)
+  precoPromocional  Float?
+  cor               String?
+  tamanho           String?
+  categoriaId       Int
+  categoria         Categoria @relation(fields: [categoriaId], references: [id])
+  itensCarrinho     ItemCarrinho[]
+  itensPedido       ItemPedido[]
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model Carrinho {
+  id        Int     @id @default(autoincrement())
+  usuarioId Int     @unique
+  usuario   Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  itens     ItemCarrinho[]
+  total     Float   @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ItemCarrinho {
+  id        Int     @id @default(autoincrement())
+  carrinhoId Int
+  carrinho  Carrinho @relation(fields: [carrinhoId], references: [id], onDelete: Cascade)
+  produtoId Int
+  produto   Produto @relation(fields: [produtoId], references: [id])
+  quantidade Int
+  precoUnitario Float
+  subtotal  Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Pedido {
+  id             Int      @id @default(autoincrement())
+  numeroPedido   String   @unique
+  status         String   @default("pendente")
+  nomeCliente    String
+  emailCliente   String
+  telefonecliente String
+  total          Float
+  usuarioId      Int?
+  usuario        Usuario? @relation(fields: [usuarioId], references: [id])
+  itens          ItemPedido[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model ItemPedido {
+  id            Int     @id @default(autoincrement())
+  pedidoId      Int
+  pedido        Pedido  @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+  produtoId     Int
+  produto       Produto @relation(fields: [produtoId], references: [id])
+  quantidade    Int
+  precoUnitario Float
+  subtotal      Float
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
