@@ -127,6 +127,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
 | POST | `/api/auth/login` | Fazer login | ❌ |
 | GET | `/api/auth/perfil` | Obter perfil | ✅ |
 | PUT | `/api/auth/perfil` | Atualizar perfil | ✅ |
+| GET | `/api/auth/vendedores` | Listar vendedores | ✅ Admin |
 
 ### 📦 Produtos
 | Método | Rota | Descrição | Auth |
@@ -210,6 +211,20 @@ Este script testa:
 - ✅ Criação de produto com token de vendedor (deve suceder)
 - ✅ Criação de produto com token de cliente (deve falhar)
 - ✅ Obtenção de perfil
+
+### Testar listagem de vendedores (Admin)
+```bash
+.\test-listar-vendedores.ps1
+```
+
+Este script testa:
+- ✅ Login como administrador
+- ✅ Listagem de todos os vendedores cadastrados
+- ✅ Exibição formatada dos dados
+
+## 📝 Documentação Adicional
+
+- **[ADMIN_VENDEDORES.md](ADMIN_VENDEDORES.md)** - Documentação completa sobre o gerenciamento de vendedores no painel admin, incluindo exemplos de implementação no frontend
 
 ## 📦 Dependências Principais
 

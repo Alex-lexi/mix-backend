@@ -11,6 +11,7 @@ export const verificarToken = (req, res, next) => {
       return res.status(401).json({
         success: false,
         message: 'Token não fornecido',
+        code: 'TOKEN_NAO_FORNECIDO',
       });
     }
 
@@ -21,6 +22,7 @@ export const verificarToken = (req, res, next) => {
     return res.status(401).json({
       success: false,
       message: 'Token inválido ou expirado',
+      code: 'TOKEN_INVALIDO_OU_EXPIRADO',
       error: error.message,
     });
   }

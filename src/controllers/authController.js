@@ -256,3 +256,77 @@ export const atualizarPerfil = async (req, res) => {
     });
   }
 };
+
+// GET - Listar todos os vendedores (apenas admin)
+export const listarVendedores = async (req, res) => {
+  try {
+    const vendedores = await prisma.usuario.findMany({
+      where: {
+        tipo: 'vendedor',
+      },
+      select: {
+        id: true,
+        email: true,
+        nome: true,
+        telefone: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    res.status(200).json({
+      success: true,
+      total: vendedores.length,
+      data: vendedores,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Erro ao listar vendedores',
+      error: error.message,
+    });
+  }
+};
+
+// DELETE - Deletar vendedor (apenas admin)
+export const deletarVendedor = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const vendedor = await prisma.usuario.findUnique({
+      where: { id: parseInt(id) },
+    });
+
+    if (!vendedor) {
+      return res.status(404).json({
+        success: false,
+        message: 'Vendedor não encontrado',
+      });
+    }
+
+    if (vendedor.tipo !== 'vendedor') {
+      return res.status(400).json({
+        success: false,
+        message: 'Apenas usuários do tipo vendedor podem ser deletados por esta rota',
+      });
+    }
+
+    await prisma.usuario.delete({
+      where: { id: vendedor.id },
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: 'Vendedor deletado com sucesso',
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Erro ao deletar vendedor',
+      error: error.message,
+    });
+  }
+};

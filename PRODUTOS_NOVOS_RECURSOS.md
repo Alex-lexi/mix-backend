@@ -143,9 +143,9 @@ GET /api/produtos/promocoes/lista?limit=20
 
 **PUT** `/api/produtos/{id}/promocao`
 
-Permite que vendedores definam ou removam uma promoção de um produto.
+Permite que **vendedores e administradores** definam, editem ou removam uma promoção de um produto.
 
-🔒 **Autenticação:** Requer token JWT (apenas vendedores)
+🔒 **Autenticação:** Requer token JWT (**vendedor** ou **admin**)
 
 **Parâmetros de Rota:**
 - `id` (obrigatório) - ID do produto
@@ -167,7 +167,7 @@ Permite que vendedores definam ou removam uma promoção de um produto.
 - O preço promocional deve ser maior que zero
 - Se `emPromocao` for `true`, `precoPromocional` é obrigatório
 
-**Exemplo - Ativar Promoção:**
+**Exemplo - Ativar/Editar Promoção:**
 ```bash
 curl -X PUT http://localhost:3000/api/produtos/10/promocao \
   -H "Content-Type: application/json" \
@@ -194,7 +194,7 @@ curl -X PUT http://localhost:3000/api/produtos/10/promocao \
 }
 ```
 
-**Exemplo - Remover Promoção:**
+**Exemplo - Remover Promoção (deletar promoção):**
 ```bash
 curl -X PUT http://localhost:3000/api/produtos/10/promocao \
   -H "Content-Type: application/json" \

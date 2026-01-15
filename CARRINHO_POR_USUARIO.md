@@ -189,6 +189,70 @@ Content-Type: application/json
 
 {
   "produtoId": 5,
+
+---
+
+## 🔁 Fluxo para Cliente Não Logado (Frontend)
+
+Quando um cliente **não estiver logado** e clicar em **"Adicionar ao carrinho"** no frontend, o fluxo recomendado é:
+
+1. O frontend tenta chamar `POST /api/carrinho/adicionar` **sem** enviar o header `Authorization`.
+2. O backend, via middleware `verificarToken`, responde com **401** e corpo:
+
+```json
+{
+  "success": false,
+  "message": "Token não fornecido",
+  "code": "TOKEN_NAO_FORNECIDO"
+}
+```
+
+3. O frontend deve interceptar essa resposta **401** e redirecionar o usuário para a página de login.
+
+### Exemplo de tratamento no frontend (pseudo-código)
+
+```javascript
+async function adicionarProdutoAoCarrinho(produtoId, quantidade = 1) {
+  const token = localStorage.getItem('token');
+
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const response = await fetch('/api/carrinho/adicionar', {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ produtoId, quantidade }),
+  });
+
+  const data = await response.json();
+
+  if (response.status === 401 && data.code === 'TOKEN_NAO_FORNECIDO') {
+    // Usuário não logado → redirecionar para login
+    const redirectUrl = `/login?redirect=/produto/${produtoId}`;
+    window.location.href = redirectUrl;
+    return;
+  }
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Erro ao adicionar produto ao carrinho');
+  }
+
+  return data;
+}
+```
+
+### Resumo do comportamento esperado
+
+- Se o backend responder **401** com `code: "TOKEN_NAO_FORNECIDO"`:
+  - ➜ Frontend deve **mandar o usuário para a tela de login**.
+  - Opcional: passar `redirect` na URL para voltar automaticamente para a página do produto após o login.
+- Depois que o usuário fizer login e receber o token:
+  - ➜ Repetir a chamada `POST /api/carrinho/adicionar` já autenticado.
   "quantidade": 2
 }
 
